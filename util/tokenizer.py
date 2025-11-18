@@ -7,9 +7,11 @@ if "wandb_mode" not in os.environ:
 else:
     local_files_only = os.environ["WANDB_MODE"] == "offline"
 
+token = ''
+
 TOKENIZERS = {
-    "smollm": AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM-135M", local_files_only=local_files_only),
-    "smollm2": AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-135M", local_files_only=local_files_only),
+    "smollm": AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B",token=token, local_files_only=False),
+    "smollm2": AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B", token=token, local_files_only=False),
 }
 
 

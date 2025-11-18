@@ -67,6 +67,8 @@ def main(cfg: DictConfig):
 
     print ("Loading models...")
     model = load_model_from_config(cfg)
+
+    print(model)
     
     if cfg.recursive.get("enable"):        
         # KV cache sharing strategy
@@ -161,4 +163,5 @@ def main(cfg: DictConfig):
     
     
 if __name__ == "__main__":
-    main()
+    cfg = OmegaConf.load('/Users/fabro/Documents/UBA/nlp/mixture_of_recursions/conf/pretrain/distill-mor.yaml')
+    main(cfg)

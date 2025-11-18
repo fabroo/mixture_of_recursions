@@ -28,6 +28,7 @@ DEFAULT_MODEL_NAME_OR_PATH = {
     "pythia-410m": "EleutherAI/pythia-410m",
     "pythia": "EleutherAI/pythia-160m",
     "olmo-1b": "allenai/OLMo-1B-hf",
+    "llama-1b": "meta-llama/Llama-3.2-1B"
 }
 
 
