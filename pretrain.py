@@ -1,7 +1,7 @@
 import os 
 os.environ["HYDRA_FULL_ERROR"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-from paths import SAVE_DIR, PROJECT_ROOT, HF_CACHE_DIR; os.environ["HF_HOME"] = HF_CACHE_DIR
+from paths import SAVE_DIR, PROJECT_ROOT, HF_CACHE_DIR; 
 import string
 import warnings
 from pathlib import Path
@@ -163,5 +163,5 @@ def main(cfg: DictConfig):
     
     
 if __name__ == "__main__":
-    cfg = OmegaConf.load('/Users/fabro/Documents/UBA/nlp/mixture_of_recursions/conf/pretrain/distill-mor.yaml')
+    cfg = OmegaConf.load('/home/fabro/Documents/uba/nlp/mixture_of_recursions/conf/pretrain/250720_uptrain_llama-1b_rec3_middle_cycle_random_lr3e-3_mor_expert_linear_alpha_0.1_sigmoid_aux_loss_0.001.yaml')
     main(cfg)

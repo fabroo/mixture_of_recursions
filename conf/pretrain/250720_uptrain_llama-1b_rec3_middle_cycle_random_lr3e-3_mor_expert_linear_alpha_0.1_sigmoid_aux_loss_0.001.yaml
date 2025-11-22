@@ -10,7 +10,7 @@ tensorboard: false
 tensorboard_dir: null
 resume_from_checkpoint: false
 resume_step: null
-dataset: fineweb_edu
+dataset: fineweb_test
 weights: null
 total_batch_size: 1024
 per_device_train_batch_size: 16
@@ -20,11 +20,11 @@ max_length: 2048
 add_bos_token: false
 global_shuffling: false
 local_shuffling: false
-tokenizer: llama
-model: llama
+tokenizer: smollm
+model: smollm
 model_name_or_path: meta-llama/Llama-3.2-1B
 model_config: null
-attn_implementation: flash_attention_2
+attn_implementation: sdpa
 use_pretrained_weights: true
 recursive:
   enable: true
