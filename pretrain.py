@@ -1,4 +1,9 @@
-import os 
+import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+ 
 os.environ["HYDRA_FULL_ERROR"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 from paths import SAVE_DIR, PROJECT_ROOT, HF_CACHE_DIR; 
@@ -29,7 +34,9 @@ from util.misc import print_trainable_parameters, get_latest_checkpoint_path, pr
 
 @hydra.main(config_path="conf/pretrain", config_name="yymmdd_pretrain")
 def main(cfg: DictConfig):
+    logging.info("Starting main function...")
     cfg = preprocess_config(cfg)
+    logging.info("Configuration preprocessed.")
     
     if cfg.wandb and cfg.get("wandb_run_id") is None:
         characters = string.ascii_letters + string.digits
@@ -38,6 +45,7 @@ def main(cfg: DictConfig):
                 
     # wandb settings
     if cfg.get("wandb"):
+        logging.info("Configuring WandB...")
         os.environ["WANDB_ENTITY"] = cfg.wandb_entity # name your W&B team
         os.environ["WANDB_PROJECT"] = cfg.wandb_project # name your W&B project
         if cfg.get("wandb_watch") is not None:
@@ -55,30 +63,41 @@ def main(cfg: DictConfig):
     launcher_type = get_launcher_type()
     
     print ("Loading tokenizers...")
+    logging.info("Loading tokenizers...")
     tokenizer = load_tokenizer_from_config(cfg)
+    logging.info("Tokenizers loaded.")
 
     print ("Loading dataset...")
+    logging.info("Loading dataset...")
     train_dataset = load_dataset_from_config(cfg, tokenizer)
     if cfg.resume_from_checkpoint:
         latest_checkpoint = get_latest_checkpoint_path(cfg, resume_step=cfg.resume_step if ("resume_step" in cfg and cfg.resume_step is not None) else None)
         train_dataset.load_state_dict(
             torch.load(os.path.join(str(latest_checkpoint), "dataset.pt"))
         )
+    logging.info("Dataset loaded.")
 
     print ("Loading models...")
+    logging.info("Loading models...")
     model = load_model_from_config(cfg)
+    logging.info("Model loaded.")
 
     print(model)
     
     if cfg.recursive.get("enable"):        
         # KV cache sharing strategy
+        logging.info(f"Applying KV cache sharing strategy: {cfg.model}")
         model, lora_init_dict = SHARING_STRATEGY[cfg.model](cfg, model)
+        logging.info("KV cache sharing strategy applied.")
     
     if "kv_sharing" in cfg and cfg.kv_sharing.get("enable"):
         model.set_kv_sharing_config(cfg)
+        logging.info("KV sharing config set.")
         
     if cfg.get("relaxation") and cfg.relaxation.get("enable"):
+        logging.info("Applying relaxation...")
         model = relax_weight_sharing(cfg, model, lora_init_dict=lora_init_dict)
+        logging.info("Relaxation applied.")
         
         if cfg.resume_from_checkpoint:
             if cfg.relaxation.get("enable"):
@@ -93,6 +112,7 @@ def main(cfg: DictConfig):
             model.transform_layer_to_mor_token(cfg)
         else:
             raise ValueError(f"Unknown MoR type {cfg.mor.type}.")
+        logging.info(f"MoR transformation ({cfg.mor.type}) applied.")
         
     print_trainable_parameters(model)
         
@@ -102,6 +122,7 @@ def main(cfg: DictConfig):
     if cfg.tensorboard:
         report_to.append("tensorboard")
     
+    logging.info("Creating TrainingArguments...")
     train_args = TrainingArguments(
         lr_scheduler_type=cfg.get("lr_scheduler_type", "cosine_with_min_lr"),
         lr_scheduler_kwargs=dict(cfg.get("lr_scheduler_kwargs", {"min_lr_rate": 0.1,})),
@@ -130,6 +151,7 @@ def main(cfg: DictConfig):
         deepspeed=cfg.deepspeed if launcher_type == "deepspeed" else None,
         log_on_each_node=False,
     )
+    logging.info("TrainingArguments created.")
     
     callbacks = []
     fixed_save_steps = cfg.fixed_save_steps if ("fixed_save_steps" in cfg and cfg.fixed_save_steps) else None
@@ -149,14 +171,18 @@ def main(cfg: DictConfig):
     else:
         trainer = Trainer(model=model, args=train_args, train_dataset=train_dataset, callbacks=callbacks,)
     
+    logging.info("Trainer initialized. Starting training...")
+    
     train_result = trainer.train(
         resume_from_checkpoint=cfg.resume_from_checkpoint
     )
+    logging.info("Training completed.")
     metrics = train_result.metrics
     trainer.log_metrics("pretrain", metrics)
     trainer.save_metrics("pretrain", metrics)
     trainer.save_state()
     trainer.save_model()
+    logging.info("Metrics and model saved.")
     
     if cfg.relaxation.get("enable"):
         trainer.model.base_model.model.save_pretrained(train_args.output_dir, safe_serialization=False)

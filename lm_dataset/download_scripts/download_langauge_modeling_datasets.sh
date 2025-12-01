@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Array of dataset names
-datasets=("fineweb-edu-dedup")
+datasets=("fineweb-test")
 
 # Directory where datasets will be stored
 hf_datasets_dir="hf_datasets"

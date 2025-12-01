@@ -198,6 +198,7 @@ results/
 hf_cache/
 hf_datasets/
 hf_models/
+wandb/
 *.png
 *.pdf
 *.html
