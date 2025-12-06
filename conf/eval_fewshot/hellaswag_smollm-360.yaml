@@ -1,17 +1,17 @@
-name: 250720_pretrain_smollm-360m_kv-share_rec3_middle_cycle_random_lr3e-3_mor_expert_linear_alpha_0.1_sigmoid_aux_loss_0.001
+name: hellaswag_llama_1b
 
 wandb: true
-wandb_mode: offline
-wandb_entity: lucajaich-universidad-de-buenos-aires
-wandb_project: MoR
+wandb_mode: online
+wandb_entity: efficient-ai-projects
+wandb_project: mixture-of-recursions
 wandb_run_name: null
 output_dir: null
 
 tensorboard: false
 tensorboard_dir: null
 
-train_cfg_fpath: null
-model_name_or_path: HuggingFaceTB/SmolLM-360M
+train_cfg_fpath: conf/pretrain
+model_name_or_path: pretrain/250720_uptrain_smollm-360_rec3_middle_cycle_random_lr3e-3_mor_expert_linear_alpha_0.1_sigmoid_aux_loss_0.001
 
 # overwrite_eval_config
 max_length: null
@@ -22,15 +22,19 @@ attn_implementation: null
 model_config: null
 precision: null
 recursive: null
+relaxation: null
+mor: null
+kv_sharing: null
+
 eval_fewshot:
     eval_multiple_checkpoints: false
     tasks: hellaswag
     model: recursive_lm
     model_args: null
     model_name_or_path: null
-    batch_size: 8
+    batch_size: 32
     device: cuda:0
-    log_samples: true  # if you want to check samples, set this to true
+    log_samples: false  # if you want to check samples, set this to true
     num_fewshot: null
     max_batch_size: null
     output_path: null

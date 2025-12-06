@@ -59,7 +59,7 @@ def load_model_from_config(cfg: DictConfig):
             cfg.model_name_or_path,
             attn_implementation=attn_implementation, 
             torch_dtype=torch_dtype,
-            local_files_only=local_files_only,
+            local_files_only=False,
         )
                 
     else:
@@ -68,7 +68,7 @@ def load_model_from_config(cfg: DictConfig):
             cfg.model_name_or_path,
             attn_implementation=attn_implementation, 
             torch_dtype=torch_dtype,
-            local_files_only=local_files_only,
+            local_files_only=False,
         )
         
         if cfg.get("model_config") is not None:

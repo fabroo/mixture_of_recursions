@@ -137,7 +137,7 @@ def main(cfg: DictConfig):
         logging_steps=cfg.logging_steps,
         save_steps=cfg.save_steps,
         save_total_limit=cfg.save_total_limit,
-        save_safetensors=False if launcher_type == "accelerate" else True,
+        save_safetensors=False,
         gradient_accumulation_steps=cfg.gradient_accumulation_steps,
         gradient_checkpointing=cfg.gradient_checkpointing,
         max_grad_norm=cfg.max_grad_norm,
@@ -189,5 +189,5 @@ def main(cfg: DictConfig):
     
     
 if __name__ == "__main__":
-    cfg = OmegaConf.load('/home/fabro/Documents/uba/nlp/mixture_of_recursions/conf/pretrain/250720_uptrain_llama-1b_rec3_middle_cycle_random_lr3e-3_mor_expert_linear_alpha_0.1_sigmoid_aux_loss_0.001.yaml')
+    cfg = OmegaConf.load('/home/ubuntu/Documents/mor/mixture_of_recursions/conf/pretrain/250720_uptrain_smollm-360_rec3_middle_cycle_random_lr3e-3_mor_expert_linear_alpha_0.1_sigmoid_aux_loss_0.001.yaml')
     main(cfg)

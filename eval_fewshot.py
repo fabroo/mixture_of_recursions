@@ -482,4 +482,5 @@ def evaluate_multiple_checkpoints(cfg: DictConfig, eval_logger=None, writer=None
 
 
 if __name__ == "__main__":
-    main()
+    cfg = OmegaConf.load('/home/ubuntu/Documents/mor/mixture_of_recursions/conf/eval_fewshot/hellaswag_llama_1b.yaml')
+    main(cfg)
