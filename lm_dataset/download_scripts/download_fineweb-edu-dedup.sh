@@ -5,7 +5,8 @@ python3 - <<EOF
 import os
 from datasets import load_dataset
 
-dataset_splits = load_dataset("HuggingFaceTB/smollm-corpus", 'fineweb-edu-dedup')
+dataset_splits = load_dataset("HuggingFaceFW/fineweb-edu", name="sample-10BT")
+
 print("fineweb-edu-dedup completed successfully")
 EOF
 
